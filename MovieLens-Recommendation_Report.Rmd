@@ -1,3 +1,27 @@
+---
+title: "MovieLens Recommender Report"
+author: "Ragini"
+date: "June 14, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+##[1. Executive Summary]
+This project is a movie recommendation system which has been created using MovieLens dataset. I have used the edx and validation dataset from the Google drive location https://drive.google.com/drive/folders/1IZcBBX0OmL9wu9AdzMBFUG8GoPbGQ38D
+
+Goal - Through this project, I have learnt to build a model through a machine learning algorithm on a training dataset and apply the model on an unknown dataset to predict its parameters. Here, movie ratings are predicted.
+
+Key Steps - edx data was explored and visualized. It was partitioned into train and test sets to build a linear regression model. Effect of movies and users both have been considered while predicting rating. The predicted ratings are compared with actual ratings to calculate RMSE and hence evaluate the performance of the model. This model is then applied on validation dataset and again RMSE is calculated.
+
+##[2. Analysis]
+The analysis starts with loading the libraries, reading data and visualizing data.
+
+```{r}
 ############################################################
 #        Movie Recommendation system (MovieLens Dataset)   #
 ############################################################
@@ -20,7 +44,11 @@ edx %>% summarize(n_users = n_distinct(userId), n_movies = n_distinct(movieId))
 
 #Data visualization
 head(edx)
+```
 
+Building a model.
+
+```{r}
 ##Partitioning edx data to create a model
 set.seed(755)
 test_index <- createDataPartition(y = edx$rating, times = 1,
@@ -66,7 +94,11 @@ model_rmse <- RMSE(predicted_ratings, test_set$rating)
 rmse_results <- data_frame(method="Movie + User Effects Model on edx test set",  
                            RMSE = model_rmse )
 rmse_results %>% knitr::kable()
+```
 
+Evaluation of the model on Validation set
+
+```{r}
 ### Validating Recommendation System on Validation set
 #Using the model built in previous steps to predict rating for validation set
 # lm(rating ~ as.factor(movieId) + as.factor(userId))
@@ -96,4 +128,16 @@ predicted_ratings <- validation %>%
 model_rmse_v <- RMSE(predicted_ratings, validation$rating)
 rmse_results <- bind_rows(rmse_results, data_frame(method="Movie + User Effects Model on Validation Set",  
                                                    RMSE = model_rmse_v ))
+
+```
+
+
+##[3. Results]
+Below section displays the result of the code.
+```{r}
 rmse_results %>% knitr::kable()
+```
+
+##[4. Conclusion]
+The program resulted in a RMSE of 0.8251 which indicates good prediction performance. Hence, it can be concluded that linear regression analysis is optimal for MovieLens dataset evaluation.
+
